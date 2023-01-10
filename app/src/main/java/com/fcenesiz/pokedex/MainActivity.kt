@@ -17,7 +17,7 @@ import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
 import androidx.navigation.navArgument
-import com.fcenesiz.pokedex.pokemonlist.PokemonListScreen
+import com.fcenesiz.pokedex.ui.pokemonlist.PokemonListScreen
 import com.fcenesiz.pokedex.ui.theme.MVVMPokedexTheme
 import dagger.hilt.android.AndroidEntryPoint
 
