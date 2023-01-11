@@ -207,8 +207,6 @@ fun PokedexEntry(
             }
     ) {
         Column {
-
-
             CoilImage(
                 model = ImageRequest.Builder(LocalContext.current)
                     .data(entry.imageUrl)
@@ -223,7 +221,7 @@ fun PokedexEntry(
                     viewModel.viewModelScope.launch {
                         val result = Coil
                             .imageLoader(context = navController.context)
-                            .execute(model)
+                            .execute(model as ImageRequest)
 
                         if (result is SuccessResult) {
                             viewModel.calcDominantColor(result.drawable) { color ->
@@ -277,11 +275,11 @@ fun PokedexRow(
 
 @Composable
 fun CoilImage(
-    model: ImageRequest,
+    model: Any?,
     modifier: Modifier = Modifier,
     contentDescription: String,
     filterQuality: FilterQuality = FilterQuality.Medium,
-    onSuccess: (ImageRequest) -> Unit,
+    onSuccess: (Any?) -> Unit = {},
     onLoading: @Composable () -> Unit =
         {
             CircularProgressIndicator(
