@@ -50,7 +50,8 @@ import kotlinx.coroutines.launch
 
 @Composable
 fun PokemonListScreen(
-    navController: NavController
+    navController: NavController,
+    viewModel: PokemonListViewModel = hiltViewModel()
 ) {
     Surface(
         color = MaterialTheme.colors.background,
@@ -71,7 +72,9 @@ fun PokemonListScreen(
                 modifier = Modifier
                     .fillMaxWidth()
                     .padding(16.dp)
-            ) {}
+            ) {
+                viewModel.searchPokemonList(it)
+            }
             Spacer(modifier = Modifier.height(16.dp))
             PokemonList(navController = navController)
         }
@@ -110,7 +113,7 @@ fun SearchBar(
                     vertical = 12.dp
                 )
                 .onFocusChanged {
-                    isHintDisplayed = !it.hasFocus
+                    isHintDisplayed = !it.hasFocus && text.isNotEmpty()
                 }
         )
         if (isHintDisplayed) {
@@ -136,6 +139,7 @@ fun PokemonList(
     val endReached by remember { viewModel.endReached }
     val loadError by remember { viewModel.loadError }
     val isLoading by remember { viewModel.isLoading }
+    val isSearching by remember { viewModel.isSearching }
 
     LazyColumn(
         contentPadding = PaddingValues(16.dp)
@@ -146,7 +150,7 @@ fun PokemonList(
             pokemonList.size / 2 + 1
         }
         items(itemCount) {
-            if (it >= itemCount - 1 && !endReached) {
+            if (it >= itemCount - 1 && !endReached && !isLoading && !isSearching) {
                 viewModel.loadPokemonPaginated()
             }
             PokedexRow(rowIndex = it, entries = pokemonList, navController = navController)
@@ -155,11 +159,11 @@ fun PokemonList(
     Box(
         contentAlignment = Alignment.Center,
         modifier = Modifier.fillMaxSize()
-    ){
-        if (isLoading){
+    ) {
+        if (isLoading) {
             CircularProgressIndicator(color = MaterialTheme.colors.primary)
         }
-        if (loadError.isNotEmpty()){
+        if (loadError.isNotEmpty()) {
             RetrySection(error = loadError) {
                 viewModel.loadPokemonPaginated()
             }
